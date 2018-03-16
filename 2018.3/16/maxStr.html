@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+    昨天被一个面试官问了一个最大字符串的问题
+    就在嘴边结果没想起来最优解  懊恼  ┗|｀O′|┛
+    今天重新理了下各种解法
+    ===>
+</body>
+<script type="text/javascript">
+	//利用对象键唯一性
+    var str = 'qweqrtyuiqqqwrtyudfgerqtywer';
+    function maxStr(str) {
+    	var obj={};
+	    for (var i = 0; i < str.length; i++) {
+	    	if (obj[str.charAt(i)]) obj[str.charAt(i)]++;
+    		else obj[str.charAt(i)]=1;
+	    }
+	    return maxObj(obj);
+    };
+    //利用数组reduce方法
+    function maxStr2(str) {
+    	var obj=str.split('').reduce((pass,value)=>(pass[value]++||(pass[value]=1),pass),{})
+    	return maxObj(obj);
+    }
+    //利用正则表达式
+    function maxStr3(str) {
+    	var obj={};
+    	str.replace(/(\w{1})/g,function ($1) {
+    		obj[$1]?obj[$1]++:obj[$1]=1;
+    	})
+    	return maxObj(obj);
+    }
+    function maxObj(obj) {
+    	var number;
+    	var num=0;
+    	for(var i in obj){
+    		if (obj[i]>num) {
+    			num=obj[i]
+    			number=i;
+    		};
+    	};
+    	return {
+    		number:number,
+    		num:num
+    	}
+    }
+</script>
+</html>
