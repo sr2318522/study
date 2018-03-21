@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>圣杯||双飞翼布局</title>
+</head>
+<body>
+	<header>
+		<p>今天重新完善的撸了一波圣杯布局</p>
+		<p>首先圣杯布局和双飞翼布局解决的问题是一样的</p>
+		<p>两边定宽,中栏自适应的布局方式</p>
+		<p>中栏要在文档流前面优先渲染</p>
+		<p>圣杯布局和双飞翼布局开始思路是相同的,三栏全部float浮动,左右两栏负margin形成同行三栏布局</p>
+		<p>但是不同的地方在于中栏的div内容不被遮盖的思路是不一样的</p>
+		<p>圣杯布局为了中间div内容不被遮盖讲中间的div设置了左右padding后将左右div用position移除</p>
+		<p>双飞翼布局则是将中间div内部创建子div放置内容通过左右margin留出div位置</p>
+		<p>下面来看实现</p>
+	</header>
+	<section class="section1">
+		<h1>先是圣杯布局</h1>
+		<style type="text/css">
+			.section1 div{
+				height: 150px;
+			}
+			.middle{
+				background: orange;
+				float: left;
+				width: 100%;
+			}
+			.left{
+				width: 300px;
+				background: blue;
+				float: left;
+				margin-left: -100%;
+				position: relative;
+				left: -300px;
+			}
+			.right{
+				width: 200px;
+				background: red;
+				float: left;
+				margin-left: -200px;
+				position: relative;
+				right: -200px;
+			}
+			.container{
+				padding: 0 200px 0 300px;
+			}
+		</style>
+		<div class="container">
+			<div class="middle">中</div>
+			<div class="left">左</div>
+			<div class="right">右</div>
+		</div>
+	</section>
+	<section class="section2">
+		<h1>
+			接下来是双飞翼布局
+		</h1>
+		<style>
+			.section2 div{
+				height: 150px;
+			}
+			.middle2{
+				background: orange;
+				float: left;
+				width: 100%;
+			}
+			.middle2 .inner{
+				margin-left: 300px;
+				margin-right: 200px;
+			}
+			.left2{
+				background: blue;
+				float: left;
+				width: 300px;
+				margin-left: -100%;
+			}
+			.right2{
+				background: red;
+				float: left;
+				width: 200px;
+				margin-left: -200px;
+			}
+		</style>
+		<div class="middle2">
+			<div class="inner">中</div>
+		</div>
+		<div class="left2">左</div>
+		<div class="right2">右</div>
+	</section>
+	<section class="section3">
+		<h1>
+			flex实现就简单很多了
+		</h1>
+		<style type="text/css">
+			.section3 div{
+				height: 150px;
+			}
+			.container3{
+				display: -webkit-flex;
+				display: -moz-flex;
+				display: -ms-flex;
+				display: -o-flex;
+				display: flex;
+			}
+			.middle3{
+				order: 1;
+				background: orange;
+				flex-grow: 1;
+			}
+			.left3{
+				width: 300px;
+				background: blue;
+			}
+			.right3{
+				width: 200px;
+				background: red;
+				order: 2;
+			}
+		</style>
+		<div class="container3">
+			<div class="middle3">中</div>
+			<div class="left3">左</div>
+			<div class="right3">右</div>
+		</div>
+	</section>
+	<section class="section4">
+		<h1>
+			基础班的三列等高
+		</h1>
+		<style>
+			.middle4{
+				background: orange;
+				float: left;
+				width: 100%;
+				padding-bottom: 99999px;
+				margin-bottom: -99999px;
+			}
+			.middle4 .inner{
+				margin-left: 300px;
+				margin-right: 200px;
+			}
+			.left4{
+				background: blue;
+				float: left;
+				width: 300px;
+				margin-left: -100%;
+				padding-bottom: 99999px;
+				margin-bottom: -99999px;
+			}
+			.right4{
+				background: red;
+				float: left;
+				width: 200px;
+				margin-left: -200px;
+				padding-bottom: 99999px;
+				margin-bottom: -99999px;
+			}
+			.container4{
+				overflow: hidden;
+			}
+		</style>
+		<div class="container4">
+			<div class="middle4">
+				<div class="inner">中</div>
+			</div>
+			<div class="left4">
+				左
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+				<p>下一行</p>
+			</div>
+			<div class="right4">右</div>
+		</div>
+	</section>
+</body>
+</html>
