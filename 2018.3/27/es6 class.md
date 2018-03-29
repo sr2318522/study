@@ -204,3 +204,245 @@ constructor默认返回实例对象(this),但也完全可以指定返回另外�
 		}
 	}
 ```
+###name属性
+>由于本质上es6的类只是es5的构造函数的一层包装,所以函数的许多特性都被class继承包括name属性 name属性总是返回紧跟在class关键字后面的类名
+
+```
+	class Point{}
+	Point.name//Point
+```
+
+###class取值函数(getter)和存值函数(setter)
+>与es5一样,在类的内部可以使用get和set关键字,对某个属性设置存值和取值函数,拦截该属性的存取行为
+
+```
+	class MyClass{
+		constructor(){
+			//...
+		}
+		get prop(){
+			return 'getter';
+		}
+		set prop(){
+			console.log('setter');
+		}
+	}
+	
+	let inst=new MyClass();
+	inst.prop=123;
+	//setter
+	inst.prop
+	//getter
+```
+上面代码中prop熟悉有对应的存值函数和取值函数,因此赋值和取值行为都被定义了
+
+存值函数和取值函数都是设置在属性Descriptor对象上的
+
+```
+	class CustomHTMLElement(){
+		constructor(element){
+			this.element=element
+		}
+		get html(){
+			return this.element.innerHTML
+		}
+		set html(value){
+			this.element.innerHTML=value;
+		}
+	}
+	var descriptor=Object.getOwnPropertyDescriptor(
+		CustomHTMLElement.prototype,'html'
+	);
+	'get' in descriptor //true
+	'set' in descriptor //true
+```
+
+###class的静态方法
+>类相当于实例的原型,所有在类中定义的方法,都会被实例继承,如果在一个方法前加上static关键字 就标识这个方法不会被实例继承 而是直接通过类来调用,这个被称为静态方法
+
+```
+	class Foo{
+		static classMethod(){
+			return 'hellow';
+		}
+	}
+	Foo.classMethod();//hellow;
+	var foo=new foo();
+	foo.classMethod();//报错
+```
+
+上面代码中 foo类的classMethod方法前有static关键字 表面该方法是一个静态方法可以直接在foo类上调用而不是在foo类的实例上调用 如果在实例上调用静态方法会抛出一个错误 表示该方法不存在
+
+注意如果静态方法上包含this关键字 这个this指向的是类 而不是实例
+
+```
+	class Foo{
+		static bar(){
+			this.baz();
+		}
+		static baz (){
+			console.log('hello')
+		}
+		baz(){
+			console.log('world)
+		}
+	}
+	Foo.bar()//hello
+```
+
+上面代码汇总静态方法bar调用了this.baz这里的this指向的是Foo类 而不是Foo实例 等同于调用Foo.baz 另外这个例子还可以看出 静态方法可以与非静态方法重名
+父类的静态方法可以被子类继承
+
+```
+	class Foo{
+		static classMethod(){
+			return 'hello';
+		}
+	}
+	class Bar extends Foo {
+	
+	}
+	Bar.classMethod() //hello
+```
+
+上面代码中，父类Foo有一个静态方法，子类Bar可以调用这个方法。
+静态方法也是可以从super对象上调用的。
+
+```
+	class Foo {
+	  static classMethod() {
+	    return 'hello';
+	  }
+	}
+	
+	class Bar extends Foo {
+	  static classMethod() {
+	    return super.classMethod() + ', too';
+	  }
+	}
+	
+	Bar.classMethod() // "hello, too"
+
+```
+
+###class的静态书写和实例属性
+>静态属性指的是class本身的属性 既class.propName,而不是定义在实例对象this上的属性
+
+```
+class Foo {
+}
+
+Foo.prop = 1;
+Foo.prop // 1
+
+```
+
+上面的这个写法为foo类定义了一个静态书写prop
+
+目前只有这种写法可行 因为es6明确规定 class 内部只有静态方法没有静态属性
+
+```
+// 以下两种写法都无效
+class Foo {
+  // 写法一
+  prop: 2
+
+  // 写法二
+  static prop: 2
+}
+
+Foo.prop // undefined
+
+```
+目前有一个静态属性的提案 对实例属性和静态属性都规定了新的写法
+
+
+1. 类的实例属性
+>类的实例属性可以用等式写入类的定义中
+
+```
+class MyClass {
+  myProp = 42;
+
+  constructor() {
+    console.log(this.myProp); // 42
+  }
+}
+```
+
+上面的代码中 myprop就是myclass的实例属性 在myclass 实例上 可以读取这个属性
+
+以前我们定义实例属性 只能写在类的constructor方法里面
+
+```
+class ReactCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+}
+```
+
+上面的代码中构造方法constructor里面定义了this.state属性
+
+有了新的写法以后 可以不再constructor方法里面定义
+
+```
+class ReactCounter extends React.Component {
+  state = {
+    count: 0
+  };
+}
+```
+
+这种写法比以前更清晰
+
+为了可读性的目的,对比哪些在constructor里面已经定义的实例属性,新写法允许直接列出
+
+```
+class ReactCounter extends React.Component {
+  state;
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+}
+```
+2类的静态属性
+
+类的静态书写只需要在实例属性前面加上static关键字就可以了
+
+```
+class MyClass {
+  static myStaticProp = 42;
+
+  constructor() {
+    console.log(MyClass.myStaticProp); // 42
+  }
+}
+```
+
+同样的这个新写法 大大方便了静态属性的表达
+
+```
+// 老写法
+class Foo {
+  // ...
+}
+Foo.prop = 1;
+
+// 新写法
+class Foo {
+  static prop = 1;
+}
+```
+
+上面代码中,老邪法的静态属性定义在类的外部.整个类生成以后,在生成静态属性.这样很容易让人忽略这个静态属性,也不符合相关代码应该放在一起的代码组织原则.另外,新鞋发是显示声明 而不是赋值处理,语义更好
+
+###new.target属性
+
+ 
