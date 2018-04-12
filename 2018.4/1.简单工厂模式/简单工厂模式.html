@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>简单工厂模式</h1>
+	<h3>静态工厂放法,由一个工厂对象决定创建某一种产品对象类的实例.主要创建同一类对象</h3>
+	<script type="text/javascript">
+		var Basketball=function () {
+			this.intro='篮球盛行于美国'
+		};
+		Baskerball.prototype={
+			getMember:function () {
+				console.log('每个队伍需要五名队员')
+			},
+			getBallSize:function () {
+				console.log('篮球很大')
+			}
+		}
+		var Football=function () {
+			this.intro='足球在世界范围内很流行'
+		}
+		Football.prototype={
+			getMember:function () {
+				console.log('每个队伍需要11名队员')
+			},
+			getBallSize:function () {
+				console.log('足球很大')
+			}
+		}
+		var Tennis=function () {
+			this.intro='每年有很多网球系列赛';
+		}
+		Tennis.prototype={
+			getMember:function () {
+				console.log('每个队伍需要1名队员')
+			},
+			getBallSize:function () {
+				console.log('网球很小')
+			}
+		}
+		SportsFactory=function (name) {
+			switch (name){
+				case 'NBA':
+					return new Baskerball();
+				case 'wordCup':
+					return new Football();
+				case 'FrenchOpen':
+					return new Tennis();
+			}
+		}
+		//当你使用这个商店工厂的时候仅需记住sportsfacroty这个工厂对象就可以了,
+		// 工厂函数会帮你找到你需要的
+		var footnall=SportsFactory('wordCup');
+		console.log(footnall);
+		console.log(footnall.intro);
+		footnall.getMember();
+	</script>
+	<h2>对象有时也可以代替许多类</h2>
+	<p>简单工厂的理念就是创建对象,像上面那种方式是对不同类的实例化,不过除此之外简单工厂模式还可以用来创建相似的对象</p>
+	<p></p>
+	<script type="text/javascript">
+		function createBook(name,time,type) {
+			var o=new Object();
+			o.name=name;
+			o.time=time;
+			o.type=type;
+			o.getName=function () {
+				console.log(this.name);
+			}
+			return o;
+		}
+		var book1=createBook('js book',2014,'js');
+		var book2=createBook('css book',2013,'css');
+		book1.getName();
+		book2.getName();
+	</script>
+	<script type="text/javascript">
+		function createPop(type,test) {
+			var o=new Object();
+			o.content=text;
+			o.show=function () {
+				//显示方法
+			}
+			if (type=='alert') {
+				//警示差异部分
+			}
+			if (type=='prompt') {
+				//提示框差异部分
+			}
+			if (type=='confirm') {
+				//确认框差异部分
+			}
+			return o;
+		};
+		var userNameAlert=createPop('alert','用户名只能是26个字母和数字')
+	</script>
+	<h2>理解决定选择</h2>
+	<p>这两种工厂模式的区别是什么</p>
+	<p>第一种是通过类实例化对象创建的,第二种是通过创建一个新对象然后包裹增强其属性的功能来实现的</p>
+	<p>他们之间的差异也造成前面通过类创建的对象,如果这些类继承同一个父类,那么他们父类原型上的方法是可以共用的</p>
+	<p>后面寄生方式创建的对象都是一个全新的个体,他们的方法就不能共用了</p>
+	<p>所以选择哪种工厂方式来实现你的需求还是要看你如何分析你的需求</p>
+</body>
+</html>
