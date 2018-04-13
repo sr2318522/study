@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>建造者模式</title>
+</head>
+<body>
+	<h1>建造者模式</h1>
+	<p>将一个复杂对象的构建层与其表现层相互分离,同样的构建过程可采用不同的标识</p>
+	<p>工厂模式主要是为了创建对象实例或者类簇,关心的是最终创建的是什么,不关心你的创建整个过程,仅仅需要
+	知道你最终创建的结果,所以通过工厂模式我们得到的都是对象实例或者类簇,然而建造者模式在创建对象时要更为复杂
+	一些,虽然其目的也是为了创建对象,但是它更多的关心的是创建这个对象的整个过程,甚至于创建对象的每一个细节
+	,比如创建一个人,我们创建的结果不仅仅是要得到这个人的实例,还要关注创建人的时候们这个人应该穿什么衣服,男的还是
+	女的,兴趣爱好都是什么,所以说创建者模式更注重的是创建细节,而在本例中我们看到,我们需要的不仅仅是应聘者的一个实例
+	还要再创建过程中注意一下这个应聘者都有哪些兴趣爱好,他的姓名等信息,他所期望的职位是什么等等,这些都是我们的关注点</p>
+	<script type="text/javascript">
+		var Human=function (param) {
+			this.skill=param&&param.skill||'保密';
+			this.hobby=param&&param.hobby||'保密';
+		}
+		Human.prototype={
+			getSkill:function () {
+				return this.skill;
+			},
+			getHobby:function () {
+				return this.hobby;
+			}
+		};
+		//姓名实例化类
+		var Named=function (name) {
+			var that=this;
+			(function (name,that) {
+				that.wholeName=name;
+				if (name.indexOf(' ')>-1) {
+					that.FirstName=name.slice(0,name.indexOf(' '));
+					that.secondName=name.slice(name.indexOf(' '));
+				}
+			})(name,that)
+		}
+		var Work=function (work) {
+			var that=this;
+			//构造器
+			(function (work,that) {
+				switch (work){
+					case 'code':
+						that.work='工程师'
+						that.workDescript='每天沉醉于编程';
+						break;
+					case 'UI':
+					case 'UE':
+						that.work='设计师';
+						that.workDescript='设计更似一种艺术';
+						break;
+					case 'teach':
+						that.work='教师';
+						that.worlDescript='分享也是一种快乐';
+						break;
+					default:
+						that.work=work;
+						that.workDescript='对不起,我们还不清楚你所选择的只为相关的描述';
+
+				}
+			})(work,that);
+		}
+		Work.prototype.changWork=function (work) {
+			this.work=work;
+		}
+		Work.prototype.changeDescript=function (setence) {
+			this.workDescript=setence;
+		}
+		//上面的代码就抽象出了3个类,应聘者类姓名解析类,和期望职位类,而我们的最终
+		// 目的是为了创建以为应聘者,所以需要上面三个抽象类,这样我们写一个建造者类
+		//在建造者类中我们通过对着三个类的组合调用,就可以窗机按出一个完整的应聘者对象了
+		//应聘者建造者
+		//参数name:姓名
+		//参数work:期望职位
+		var Person=function (name,work) {
+			//创建应聘者缓存对象
+			var _person=new Human();
+			//创建应聘者姓名解析对象
+			_person.name=new Named(name);
+			//创建应聘者期望职位
+			_person.work=new Work(work)
+			//将创建的应聘者对象返回
+			return _person;
+		}
+		//在应聘者建造者中我们分成三个部分来创建一位应聘者对象,首先创建一位应聘者缓存对象,
+		//缓存对象需要修饰属性和方法,然后我们向缓存对象添加姓名,添加一个期望职位,最终我们就可以得到以为完整的应聘者了
+		var person=new Person('xiao ming','code');
+		/**
+			工厂模式创建出来的是一个对象,它追求的是创建的结果,别无他求,所以仅仅是一个实实在在的创建过程
+			而建造者模式就有所不同,它不仅仅可得到创建的结果,然而也参加了创建的过程对于创建的具体实现的细节也参与
+			了干涉可以说是创建的对象更复杂,或者说这种模式创建的对象是一个符合对象
+
+			回忆了前面学过的几种工厂模式,他们都有一个共同特点,就是创建的结果都是一个完整的个体,他们对创建的过程不得而知
+			我们只要了解得到创建结果对象.而在建造者模式中我们关心的就是对象创建的过程,因此我们通常将创建对象的类模块化,
+			这样使被创建的类的每一个模块都可以得到灵活的运用和高质量的复用,当然我们最终的需求是得到一个完整的个体,所以在拆分创建的
+			整个过程中,我们将得到一个统一的结果
+			这种方式对于整体对象类的拆分无形中增加了结构的复杂性,因此如果对象颗粒度很小忙活着模块间的复用率很低而且变动不大,我们最好还是
+			创建整体对象
+		**/
+	</script>
+</body>
+</html>
