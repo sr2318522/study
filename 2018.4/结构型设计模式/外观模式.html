@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>外观模式</title>
+</head>
+<body>
+	<h1>外观模式</h1>
+	<p>对一组负责的子系统接口提供一个更高级的统一接口,通过这个接口使得子系统接口访问更容易,在javascript中有时用于对底层
+	结构兼容性做统一封装来简化用户使用</p>
+	<script type="text/javascript">
+		//外观模式
+		function addEvent(dom,type,fn) {
+			//对于支持dom2级事件处理的程序用addEventListener方法的浏览器
+			if (dom.addEventListener) {
+				dom.addEventListener(type,fn,false);
+			//对于不支持addEventListener的方法但支持attacheEvent的浏览器
+			}else if (dom.attachEvent) {
+				dom.attachEvent('on' +type,fn);
+			//对于不支持以上方法但是支持on+事件命的浏览器
+			}else{
+				dom['on'+type]=fn;
+			}
+		}
+
+		var muInput=document.getElementById('myinput');
+		addEvent(myinput,'click',function () {
+			console.log('绑定第一个事件');
+		})
+		addEvent(muinput,'click',function () {
+			console.log('绑定第二个事件');
+		})
+		// 除此之外观模式可以简化底层接口复杂性,也可以解决兼容性问题
+		var getEvent=function (event) {
+			return event||window.event;
+		}
+		var getTarget=function (event) {
+			var event=getEvent(event);
+			//标准浏览器下event.target ie下event.srcElement
+			return event.target||event.srcElement;
+		}
+		var  preventDefault=function (event) {
+			var event=getEvent(event);
+			//标准浏览器
+			if (event.preventDefault) {
+				evemt.preventDefault()
+			//ie浏览器
+			}else{
+				event.returnValue=false;
+			}
+		}
+		//有了上面的方法我们就可以用兼容的简单方式来解决上面的问题了
+		document.onclick=function (e) {
+			preventDefault(e);
+			if (getTarget(e)!==document.getElementById('muinput')) {
+				hideInputSug();
+			}
+		}
+		/*
+			在一个复杂系统提供的一系列复杂接口方法时,为系统管理方便会造成系统接口方法使用极其复杂
+			在团队多人开发中,撰写成本是很大的,当然通过外观模式,接对口的二次封装,隐藏其复杂性,并简化其使用
+			是一种很不错的时间,当然这种时间增加了一些资源的开销以及程序的复杂度,当然这种开销相对于成本来说是可以
+			忽略的 外观模式是对接口方法的外层包装,以供上层代码调用.因此有时外观模式封装的接口方法不需要接口的具体
+			实现,只需要按照接口使用规则使用即可,这也是对系统与客户(使用者)之间的一种松散偶尔,使得系统与客户之间
+			不会因为结构变化而相互影像
+		*/
+	</script>
+</body>
+</html>

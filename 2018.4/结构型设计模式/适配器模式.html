@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>适配器模式</title>
+</head>
+<body>
+	<h1>适配器模式</h1>
+	<p>将一个类(对象)的接口转换成另一个接口吗,以满足用户需求,是对象之间接口的不兼容问题通过适配器得以解决</p>
+	<script type="text/javascript">
+		function ajaxAdapter(data) {
+			return [data['key1'],data['key2'],data['key3']]
+		}
+		$.ajax({
+			url:'someAdress.php',
+			success:function (data,status) {
+				if (data) {
+					doScomething(ajaxAdapter(data))
+				}
+			}
+		})
+		//这样日后如果后端数据格式有变化我们只需要相应地更改ajaxAdaoter适配器转换就可以了
+		/*
+			在传统设计模式中,适配器模式往往是适配两个类接口不兼容的问题,然后在javascript中,适配器
+			的应用范围更广,比如适配两个代码库,适配前后端数据 等等
+			javascript 中的适配器的应用更多应用在对象之间,为了使对象可用,通常我们会将对象拆分并重新
+			包装,这样我们就要了解适配对象的内部结构,这样说外观模式的区别所在,当然适配器模式同样解决了对象
+			之间的耦合度,包装的适配器代码增加了一些资源开销,当然这是微乎其微的
+		*/
+	</script>
+</body>
+</html>

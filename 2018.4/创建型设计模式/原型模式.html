@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>原型模式</title>
+</head>
+
+<body>
+	<h1>原型模式</h1>
+	<h3>原型实例指向创建对象的类,使用创建新的对象共享原型对象的属性及方法</h3>
+	<p>首先是一个比较基础的面向对象的轮播图方法</p>
+	<script type="text/javascript">
+	var LoopImages = function(imgArr, container) {
+		// 轮播图片数组
+		this.imagesArray = imgArr;
+		//轮播图图片容器
+		this.container = container;
+		//创建轮播图片
+		this.createImage = function() {}
+		//切换下一张图片
+		this.changeImage = function() {}
+	}
+	//上下滑动切换类
+	var SlideLoopImg = function(imgArr, container) {
+		//构造函数继承图片轮播类
+		LoopImages.call(this, imgArr, container);
+		//重写继承的切换下一张方法
+		this.changeImage = function() {
+			console.log('SlideLoopImg changeImage function');
+		}
+	}
+	//渐隐切换类
+	var FadeLoopImg = function(imgArr, container, arrow) {
+		LoopImages.call(this, imgArr, container);
+		// 切换箭头私有变量
+		this.arrow = arrow;
+		this.changeImage = function() {
+			console.log('fadeloopImg changeImage function');
+		}
+	}
+	// 实例化一个渐隐切换的图片类
+	var fadeImg = new FadeLoopImg([
+		'01.jpg',
+		'02.jpg',
+		'03.jpg',
+		'04.jpg',
+	], 'slide', [
+		'lift.jpg',
+		'right.jpg',
+	])
+	fadeImg.changeImage();
+	/*
+		原型模式就是将可服用的.可共享的耗时大的从基类中提出来然后方在原型中,然后子类通过组合继承或者寄生
+		组合式继承而将方法和书写继承下来,对于子类中哪些需要重写的方法进行重写,这样子类创建的对象既具有子类
+		的属性和方法也共享了基类的原型方法
+	*/
+	//图片轮播类
+	var LoopImages=function (imgArr,container) {
+		this.imgesArray=imgArr;
+		this.container=container;
+	}
+	LoopImages.prototype={
+		//创建轮播图片
+		createImage:function () {
+			console.log('LoopImages createImage function')
+		},
+		//切换下一张图片
+		changeImage:function () {
+			console.log('LoopImages changeImage funciton')
+		}
+	}
+	//上下滑动类
+	var slideLoopImg=function (imgArr,container) {
+		LoopImages.call(this,imgArr,container)
+	}
+	slideLoopImg.prototype=new LoopImages();
+	//重写下一张方法
+	slideLoopImg.prototype.changeImage=function () {
+		console.log('slide LoopImages changeImage funciton')
+	};
+	//渐隐类
+	var FedeLoopImg=function (imgArr,container,arrow) {
+		LoopImages.call(this,imgArr,container);
+		this.arrow=arrow;
+	}
+	FadeLoopImg.prototype=new LoopImages();
+	FadeLoopImg.prototype.changeImage=function () {
+		console.log('FadeLoopImg changeImage funciton')
+	}
+	//原型模式可以让多个对象分享同一个原型对象的属性与方法,这也是一种继承方式忙不过这种继承方式
+	//的实现是不需要创建的,而是将原型对象分享给那些继承的对象,当然有时需要让每个继承对象独立有用一份
+	//原型对象,此时我门们需要对原型对象进行复制
+	//由此我们可以看出,原型对象更适合在创建复杂对象时,对于那些需求一直在个变化而导致对象结构不停滴
+	//改变时,将那些比较稳定的属性和方法共用而提取的继承实现
+	</script>
+</body>
+
+</html>
