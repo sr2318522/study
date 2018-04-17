@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>重排和重绘</title>
+</head>
+<body>
+	<ul>
+		<li>dom树 标识页面结构</li>
+		<li>渲染树 标识dom节点在页面中如果显示</li>
+	</ul>
+
+	<p>dom树中每一个需要显示的节点在渲染树种至少存在一个对应的节点(隐藏的dom元素在渲染树中没有对应的节点)
+	渲染书中的节点被称为帧或者盒子符合css模型定义.理解页面元素为一个具有内边距,外边距,边框,和位置的盒子,一旦dom
+	树和渲染树构建完成浏览器就开始显示页面元素</p>
+
+	<p>当dom的变化影响了元素的几何属性 比如改变边框狂赌或给段落增加文字,导致行数增加 浏览器需要重新计算元素的几何
+	属性,同样其他的元素的几何属性和位置也会因此受到影响.浏览器会使渲染树中受到影响的步伐失效,并重新构建渲染树
+	这样的过程称为重排,完成重排后,浏览器会重新绘制受影响的部分到屏幕中,过程称为重绘</p>
+
+	<p>并不是所有的dom变化都会影响几何属性,比如改变元素的背景色不会影响宽和高 在这种情况下 只会发生一次重绘
+	并不会重排 因为元素的布局并没有改变</p>
+
+	<em>重排一定会引起浏览器的重绘 但是重绘则不一定伴随着重排</em>
+
+	<p>重排和重绘操作都是代价昂贵的操作,它会导致web应用程序的ui反应迟钝 所以 应当尽可能减少这类过程的发生</p>
+
+	<h1>触发重排的情况</h1>
+	<ul>
+		<li>添加或者删除可见的dom元素</li>
+		<li>元素位置发生改变</li>
+		<li>元素尺寸发生改变</li>
+		<li>元素内容发生改变</li>
+		<li>页面渲染器初始化</li>
+		<li>浏览器窗口尺寸改变</li>
+		<li>获取会导致渲染队列刷新的属性</li>
+	</ul>
+	<h1>渲染树变化的排队与刷新</h1>
+	<p>由于每次的重排都会产生计算消耗,大多数浏览器通过队列华修改并批量执行来优化重排过程
+	然而,你可能强制刷新队列并要求任务立刻执行 获取布局信息的操作会导致队列刷新 比如以下属性</p>
+	<ul>
+		<li>offsetTop offsetLeft offsetWidth offseHeight</li>
+		<li>scrollTop scrollLeft scrollWidth scrollHeigth</li>
+		<li>clientTop clientLeft clientWidth clientHeight</li>
+		<li>getComputedStyle()</li>
+	</ul>
+	<p>当获取以上属性和方法时 浏览器为了获取最新的布局信息,不得不执行渲染队列中的 待处理变化 并触发重排以返回正确值</p>
+
+	<h1>最小化重绘和重排</h1>
+	<p>重绘和重排代价非常昂贵,因此一个号的提高程序响应速度的策略就是减少此类操作的发生</p>
+
+	<h1>合并多次对样式的属性操作</h1>
+	<p>为了减少重绘重排发生的次数,应该合并多次对dom的样式修改 然后依次处理掉
+	考虑下面例子</p>
+	<script type="text/javascript">
+		var el=document.getElementById('mydiv')
+		el.style.borderLeft='1px'
+		el.style.borderRight='2px'
+		el.style.padding='5px'
+	</script>
+	<p>示例中有三个样式属性被改变 每一个都会影响元素的几何结构 最糟糕的情况下 会导致浏览器触发三次重排
+	现在大部分浏览器为此做了优化 只会触发一次重排 但是在旧的浏览器洪或者有一个分离的异步处理过程 仍然效率低下
+	如果在执行上面代码时 有其他代码请求布局信息 这会导致三次重排 而且 这段代码四次访问dom 还可以被优化</p>
+	<script type="text/javascript">
+		var el = document.getElementById('mydiv');
+		el.style.cssText = 'border-left: 1px; border-right: 2px; padding: 5px;';
+	</script>
+	<p>另一个一次性修改样式的办法是修改 CSS 的 class 名称，而不是修改内联样式。这种方法适用于那些不依赖于运行逻辑和计算的情况</p>
+	<script type="text/javascript">
+		var el = document.getElementById('mydiv');
+		el.className = 'active';
+	</script>
+	<h1>批量修改dom</h1>
+	<p>当对dom元素进行一系列操作时,可以通过以下步骤来减少重绘和重排次数</p>
+	<ul>
+		<li>是元素脱离文档流</li>
+		<li>操作元素</li>
+		<li>操作完成后让元素回到文档流</li>
+	</ul>
+	<p>这样只有在第一和第三步才会造成重排</p>
+	<script type="text/javascript">
+		// 隐藏元素（display: none;），操作元素，重新显示
+		// var ul = document.getElementById('mylist');
+		// ul.style.display = 'none';
+		// appendDataToElement(ul, data);
+		// ul.style.display = 'block';
+		// 使用文档片段（document fragment）在当前 DOM 之外构建一个子树，再把它拷贝回文档
+		// var fragment = document.createDocumentFragment();
+		// appendDataToElement(fragment, data);
+		// document.getElementById('mylist').appendChild(fragment);
+		// 将原始元素拷贝到一个脱离文档的节点中，修改副本，完成后再替换原始元素
+		// var old = document.getElementById('mylist');
+		// var clone = old.cloneNode(true);
+		// appendDataToElement(clone, data);
+		// old.parentNode.replaceChild(clone, old);
+		// 推荐尽可能的使用文档片段（第二个方案），因为它们所产生的 DOM 遍历和重排次数最少。
+		// 唯一潜在的问题是文档片段未被充分利用，很多人可能并不熟悉这项技术。
+		// 定位
+		// 将需要多次重排的元素，position 属性设置为 absolute 或 fixed，
+		// 这样元素就脱离了文档流，它的变化不会影响到其他元素。例如有动画效果的元素就最好设置为绝对定位。
+
+
+
+	</script>
+</body>
+</html>
