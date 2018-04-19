@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>装饰者模式</title>
+</head>
+<body>
+	<h1>装饰者模式</h1>
+	<p>在不改变原对象的基础上,通过对其进行包装拓展(添加属性或者方法)使原对象可以满足用户更加复杂的需求</p>
+	<script type="text/javascript">
+		var decorator=function (input,fn) {
+			var input=document.getElementById(input)
+			if (typeof input.onclick==='function') {
+				var oldClickFn=input.onclick;
+				input.onclick=function () {
+					oldClickFn();
+					fn();
+				};
+			}else{
+				input.onclick=fn();
+			};
+		}
+		decorator('tel_input',function () {
+			document.getElementById('tel_input').style.display='none';
+		})
+	</script>
+	<p>适配器模式进行拓展很多时候是对对象内部结构进行重组,因此了解自身结构是必须的,而装饰者对对象的拓展是一种
+	良性的拓展,不用了解具体实现,只是在外部进行一次封装拓展,这又是对原有功能的一种完整性保护</p>
+</body>
+</html>
