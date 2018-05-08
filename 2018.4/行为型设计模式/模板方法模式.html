@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>模板方法 父类中定义一组操作算法骨架 而将一些实现步骤延迟到子类中来 使得子类可以不改变父类的算法
+	结构的同时可以重新定义算法中某些实现步骤</h1>
+</body>
+<script type="text/javascript">
+	var Alert=function (data) {
+		//如果没有数据则返回防止后续任务执行
+		if (!data) {
+			return;
+		}
+		//设置内容
+		this.content=data.content;
+		//创建提示面板
+		this.panel=document.createElement('div');
+		//创建提示内容组件
+		this.contentNode=document.createElement('p');
+		//创建确定按钮组件
+		this.confirmBtn=document.createElement('span');
+		//创建关闭按钮组件
+		this.closeBtn=document.createElement('b');
+		//为提示框面板添加类
+		this.panel.className='alert';
+		//为关闭按钮添加类
+		this.closeBtn.className='a-close';
+		//为确定按钮添加类
+		this.confirmBtn.className='a-confirm';
+		//为确定按钮添加类
+		this.confirmBtn.className=data.confirm||'确认';
+		//为提示内容添加文本
+		this.contentNode.innerHTML=this.content;
+		//为点击确定按钮添加执行方法 如果data 有success方法贼为success方法 否则为空
+		this.success=data.success||function () {}
+		//点击关闭执行按钮
+		this.fail=data.fail||function () {}
+	}
+	//模板方法的核心在于对方法的重用,他将核心的方法封装在基类中,让子类继承基类的方法,实现基类方法
+	//的共享,达到方法公用,当然这种设计模式也导致基类控制子类必须遵守某些法则,这是一种行为的约束,
+	//当然为了让行为的约束更可靠 基类中封装的方法通常是不变的算法,或者有稳定的调用方式
+	// 子类继承的方法亦可是可以拓展的,这样就要求对基类继承的方法进行重写,当然为了更好的实践 我们通常
+	//要控制这种拓展 这样才能让基类对于子类更有稳健的束缚力 然而子类对自身的私有行为的拓展还是很有必要的
+</script>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>观察者模式 又被成为发布-订阅者模式或者消息模式 定义了一种依赖关系解决了主题对象与观察者之间的功能耦合</h1>
+	<script type="text/javascript">
+		//将观察者放到闭包中
+		var Observer=(function () {
+			//防止消息队列暴露而被篡改故将消息容器做为静态私有变量保存
+			var _messages={}
+			return {
+				//注册信息接口
+				regist:function (type,fn) {
+					//如果消息不存在则应该创建一个该消息类型
+					if (typeof message[type]==='undefined') {
+						//将动作推入到该消息对应的动作执行队列中
+						_messages[type]=[fn];
+					}else{
+						//将动作方法推入该消息对应的动作执行序列中
+						_messages[type].push(fn);
+					}
+				},
+				//发布信息接口
+				fire:function (type,args) {
+					if (!messages[type]) return
+					var events={
+						type:type,
+						args:args||{}
+					}
+					var i=0;
+					var len=message[type].length;
+					for(;i<len;i++){
+						//依次执行注册的消息对应的动作序列
+						_messages[type][i].call(this,events);
+					}
+				},
+				//移除信息接口
+				remove:function (type,fn) {
+					//如果消息动作队列存在
+					if (_messages[type] instanceof Array) {
+						//从最后一个消息动作遍历
+						var i=_messages[type].length-1;
+						for(;i>=0;i--){
+							//如果存在该动作则在消息动作序列中移除相应动作
+							_messages[type][i]===fn&&_messages[type].splice(i,1);
+						}
+					}
+				}
+			}
+		})
+		Observer.regist('test',function (e) {
+			console.log(e.type,e.args.msg);
+		})
+		Observer.fire('test',{msg:'传递参数'});
+		//观察者模式最主要的作用是解决类或者对象之间的耦合,解耦两个互相依赖的对象,使其依赖于观察者
+		//的消息机制.这样对于仍以一个订阅者对象来说,其他订阅者对象的改变不会影响到自身.对于每一个订阅者来说
+		//其自身既可以是消息的发出者也可以是消息的执行者,这都依赖于调用观察者对象的三种方法(订阅消息,注销消息,发布消息的一种)
+		//团队开发中,尤其是大型项目的模块化开发中一位工程师很难做到熟知项目中每一个模块,此时为了完成一个涉及多模块调用的需求
+		//观察者模式的优势就显而易见了,模块间的信息传递不必要互相引用其他模块 只需要通过观察则模式注册或者发布消息即可.通过
+		//观察则模式工程师间对功能开发只需要按照给定的消息格式开发各自的功能即可,而不必去担忧他人模块.
+	</script>
+</body>
+</html>
