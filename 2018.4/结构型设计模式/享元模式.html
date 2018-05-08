@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>享元模式</title>
+</head>
+
+<body>
+	<h1>享元模式 运用共享技术有效的支持大量的细粒度对象,避免对象间拥有相同内容造成多余开销</h1>
+</body>
+<script type="text/javascript">
+var dom = null,
+	paper = 0,
+	num = 0,
+	i = 0,
+	len = article.lenth;
+//
+for (; i < len; i++) {
+	//创建包装新闻标题元素
+	dom = document.createElement('div');
+	//向元素中添加新闻标题
+	dom.innerHTML = article[i];
+	// 超出第一页新闻隐藏
+	if (i >= num) {
+		dom.style.display = 'none';
+	}
+	//添加到页面中
+	document.getElementById('container').appendChild(dom);
+}
+//下一页绑定事件
+document.getElementById('next_page').onclick = function() {
+	var div = document.getElementById('container').getElementsByTagName('div');
+	j = k = n = 0;
+	n = ++paper % Math.ceil(len / num) * num;
+	for (; j < len; j++) {
+		div[j].style.display = 'none';
+	}
+	for (; k < 5; k++) {
+		if (div[n + k]) {
+			div[n + k].style.display = 'block'
+		}
+	}
+}
+
+
+//享元模式
+var Flyweight=function () {
+	//已经创建的元素
+	var created=[];
+	//创建一个新闻包装容器
+	function create() {
+		var dom=document.createElement('div');
+		//将容器插入新闻列表容器中
+		document.getElementById('container').appendChild(dom);
+		//缓存新创建的元素
+		created.push(dom);
+		//返回创建的新元素
+		return dom;
+	}
+	return {
+		//获取创建的新闻元素方法
+		getDiv:function () {
+			//如果创建的元素小于当前页元素总个数,则创建
+			if (created.length<5) {
+				return create();
+			}else{
+				//获取第一个元素,并插入到最后
+				var div=created.shift()
+				created.push(div);
+				return div;
+			}
+		}
+	}
+}
+
+//享元模式的应用目的是为了提高程序的执行效率与系统的性能,因此在大型系统开发中引用是比较广泛的
+//百分之一的效率提升有时可能发生质的改变它可以避免程序中的数据重复有时系统内存在大量对象,会造成
+//大量内存占用 所以应用享元模式来减少内存消耗是很有必要的 不过应用时一定要找准内部状态(数据和方法)
+//与外部状态这样才可以更合理的提取和分离 当然在一些小程序中,性能和内存的消耗对程序的执行效率影像并不大,
+//强行引入享元模式引入代码复杂的逻辑会受到反效果
+</script>
+
+</html>
