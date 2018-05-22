@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>访问者模式</title>
+</head>
+<body>
+	<h1>访问者模式 针对对象结构中的元素 定义在不改变对象的前提下访问结构中元素的新方法</h1>
+	<script type="text/javascript">
+		function bindIEEvent(dom,type,fn,data) {
+			var data=data||{};
+			dom.attachEvent('on'+type,function (e) {
+				fn.call(dom,e,data);
+			})
+		}
+		//访问者模式解决了数据与数据的操作方法之间的耦合,讲数据的操作方法独立于数据,使其可以自由
+		//化演变.因此访问者更适合于哪些数据稳定,但是数据操作方法易变的环境下.因此当操作坏境改变时,
+		//可以自由修改操作方法以适应操作环境,而不用修改元数据,实现了操作方法的拓展,同事对于同一个数据
+		//它可以被多个访问对象所访问,这极大的增加了操作数据的灵活性
+	</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>中介者模式</title>
+</head>
+<body>
+	<h1>中介者模式</h1>
+	<script type="text/javascript">
+		var Mediator=function () {
+			var _msg={};
+			return {
+				/**
+					订阅消息方法
+					参数 type 消息名称
+					参数action 消息回调名称
+				**/
+				register:function (type,action) {
+					//如果消息存在
+					if (_msg[type]) {
+						//存入回调函数
+						_msg[type].push(action);
+					}else{
+						//不存在 则建立该消息容器
+						_msg[type]=[];
+						//存入新消息回调函数
+						_msg[type].push(action);
+					}
+				},
+				/**
+					发布消息方法
+					参数 type 消息名称
+				**/
+				send:function (type) {
+					//如果这个消息已经被订阅
+					if (_msg[type]) {
+						//遍历已存储的消息回调函数
+						for (var i = 0,len=_msg[type]; i < len; i++) {
+							//执行该回调函数
+							_msg[type][i]&&_msg[type][i]();
+						}
+					}
+				}
+			}
+		}();
+		/**
+			同观察者模式一样,中介者模式的主要业务也是通过模块间或者对象间的复杂通信,来解决模块间或对象间的耦合
+			对于中介者对象的本质是分装多个对象的交互,并且这些对象的交互一般都是在中介者内部实现的
+			与外观模式的封装性相比,中介者模式对多个对象交互的封装,切这些对象一般处于同一层面上,并且封装的交互
+			在中介者内部,而外观模式封装的目的是为了提供更简单的一用接口,
+		**/
+	</script>
+</body>
+</html>

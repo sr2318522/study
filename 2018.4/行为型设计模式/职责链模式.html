@@ -90,6 +90,20 @@
 			//显示校验结果
 			dom.parentNode/getElementsByTagName('span')[0].innerHTML=data;
 		}
+
+		var input=document.getElementsByTagName('input');
+		input[0].onchange=function (e) {
+			sendData({value:input[0].value},'validate',input[0]);
+		}
+		input[1].onkeydown=function (e) {
+			sendData({value:input[1].value},'sug',input[1]);
+		}
+
+		//职责链模式定义了请求的传递方向,通过多个对象对请求的传递,实现一个复杂的逻辑操作 因此职责链模式将复杂的
+		//需求颗粒化逐一实现每个对象分内的需求,并将请求顺序地传递,对于职责链上的每一个对象来说 他都可能是请求的发起者也可
+		//能是请求的接受者 通过这样的方式不仅仅简化原对象的复杂度 而且解决元请求的发起者与怨气请的接受者之间的耦合 当然也方便对
+		//每个阶段对象进行单元测试 同时对与中途插入的请求此模式依然使用,并可顺利对请求执行产出结果.
+		//职责链上每一个对象不一定都能参与请求的传递,有时会造成一丝资源浪费 并且多个对象参与请求的传递 在代码调试时增加了成本
 	</script>
 </body>
 </html>
