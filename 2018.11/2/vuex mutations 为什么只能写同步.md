@@ -1,0 +1,10 @@
+# vuex mutations 为什么只能写同步
+> 区分 actions 和 mutations 并不是为了解决竞态问题，而是为了能用 devtools 追踪状态变化。  
+
+
+其实vuex里面actions只是一个架构性的概念,并不是必须的,说到底是一个函数 你在里面想做什么都可以 只要最后可以触发mutations就可以 异步竞态怎么处理都是用户自己的事情,而vuex真正限制你的只有mutation必须同步这一点
+
+### 为什么mutation只能写同步代码
+同步的意义在于这样每一个mutation执行完成以后都可以对应到一个新的状态
+这样devtaools就可以打个snapshot存下来,然后就可以随便的time-travel了
+如果你开着devtool调用一个异步的action 你就可以清楚的看到他所调用的mutation是何时被记录下来的 并且可以立刻查看他们对应的状态
